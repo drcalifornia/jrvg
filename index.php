@@ -141,7 +141,7 @@ if ($result && $result->num_rows > 0) {
                                 <?php foreach ($itens_pessoais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
                                         <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img" loading="lazy">
-                                        <p><?= htmlspecialchars($item['descricao']) ?></p>
+                                        <p><?php echo $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -168,7 +168,7 @@ if ($result && $result->num_rows > 0) {
                                 <?php foreach ($itens_profissionais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
                                         <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img" loading="lazy">
-                                        <p><?= htmlspecialchars($item['descricao']) ?></p>
+                                        <p><?php echo $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
