@@ -1,12 +1,14 @@
-<?php include("db_connect.php"); ?>
-
 <?php
+include("db_connect.php");
+
 // Função para excluir item
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $stmt = $conn->prepare("DELETE FROM tb_itens WHERE id = ?");
     $stmt->bind_param("i", $id);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        die("Erro ao excluir item: " . $stmt->error);
+    }
     $stmt->close();
     header("Location: admin.php");
     exit;
@@ -15,21 +17,31 @@ if (isset($_GET['delete'])) {
 // Função para adicionar item
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_item'])) {
     $descricao = $_POST['descricao'];
-    $tipo = $_POST['tipo'];
+    $tipo = intval($_POST['tipo']);
+    $dbPath = null;
 
     // Upload da imagem
-    if (isset($_FILES['attach']) && $_FILES['attach']['error'] == 0) {
-        $uploadDir = "img/";
-        $fileName = time() . "_" . basename($_FILES['attach']['name']);
-        $filePath = $uploadDir . $fileName;
+    if (isset($_FILES['attach']) && $_FILES['attach']['error'] === 0) {
+        $uploadDir = __DIR__ . "/img/";
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
 
-        if (move_uploaded_file($_FILES['attach']['tmp_name'], $filePath)) {
-            $stmt = $conn->prepare("INSERT INTO tb_itens (descricao, attach, tipo) VALUES (?, ?, ?)");
-            $stmt->bind_param("ssi", $descricao, $filePath, $tipo);
-            $stmt->execute();
-            $stmt->close();
+        $fileName = time() . "_" . preg_replace("/[^a-zA-Z0-9.\-_]/", "_", basename($_FILES['attach']['name']));
+        $filePath = $uploadDir . $fileName;
+        $dbPath = "img/" . $fileName;
+
+        if (!move_uploaded_file($_FILES['attach']['tmp_name'], $filePath)) {
+            die("Erro ao fazer upload da imagem!");
         }
     }
+
+    $stmt = $conn->prepare("INSERT INTO tb_itens (descricao, attach, tipo) VALUES (?, ?, ?)");
+    $stmt->bind_param("ssi", $descricao, $dbPath, $tipo);
+    if (!$stmt->execute()) {
+        die("Erro ao salvar no banco de dados: " . $stmt->error);
+    }
+    $stmt->close();
 
     header("Location: admin.php");
     exit;
@@ -50,6 +62,9 @@ $result = $conn->query($sql);
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Summernote CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" rel="stylesheet">
+
     <style>
         body {
             background-color: #f4f6f9;
@@ -67,11 +82,11 @@ $result = $conn->query($sql);
         .modal-content {
             border-radius: 10px;
         }
+        .note-editor.note-frame {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
     </style>
-    
-    <!-- Summernote CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" rel="stylesheet">
-
 </head>
 <body>
 
@@ -93,7 +108,7 @@ $result = $conn->query($sql);
                             <img src="https://via.placeholder.com/300x150?text=Sem+Imagem" alt="Sem imagem">
                         <?php endif; ?>
                         <div class="card-body">
-                            <h5 class="card-title"><?= htmlspecialchars($row['descricao']) ?></h5>
+                            <h5 class="card-title"><?= $row['descricao'] ?></h5>
                             <p class="card-text">
                                 <span class="badge bg-<?= $row['tipo'] == 1 ? 'info' : 'success' ?>">
                                     <?= $row['tipo'] == 1 ? 'Pessoal' : 'Profissional' ?>
@@ -115,7 +130,7 @@ $result = $conn->query($sql);
 
 <!-- Modal de adicionar item -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form action="admin.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
@@ -125,7 +140,7 @@ $result = $conn->query($sql);
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="descricao" class="form-label">Descrição</label>
-                        <input type="text" name="descricao" id="descricao" class="form-control" required>
+                        <textarea name="descricao" id="descricao" class="form-control" required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo</label>
