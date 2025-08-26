@@ -245,7 +245,11 @@ tinymce.init({
              'alignright alignjustify | bullist numlist outdent indent | ' +
              'link image media table | removeformat | code help',
     menubar: true,
-    branding: false
+    branding: false,
+    mobile: {
+        menubar: true,
+        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code'
+    }
 });
 </script>
 
@@ -259,7 +263,11 @@ document.addEventListener("DOMContentLoaded", function() {
         height: 300,
         language: 'pt_BR',
         branding: false,
-        menubar: true
+        menubar: true,
+        mobile: {
+            menubar: true,
+            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code'
+        }
     });
 
     // Preencher os dados no modal ao clicar em Editar
