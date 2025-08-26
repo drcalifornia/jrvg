@@ -296,33 +296,55 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("itens-container");
 
-    new Sortable(container, {
-        animation: 150,
-        onEnd: function () {
-        const ordem = [];
-        document.querySelectorAll("#itens-container .card-container").forEach(card => {
-            ordem.push(card.dataset.id);
-        });
+    let sortableInstance = null;
+let dragEnabled = false;
 
-        fetch("salvar_ordem.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ordem })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "ok") {
-                console.log("Ordem salva com sucesso!");
-            } else {
-                console.error("Erro ao salvar ordem:", data);
-                alert("Erro ao salvar ordem!");
+function initSortable() {
+    sortableInstance = new Sortable(container, {
+            animation: 150,
+            disabled: true, // inicia desativado
+            onEnd: function () {
+                const ordem = [];
+                document.querySelectorAll("#itens-container .card-container").forEach(card => {
+                    ordem.push(card.dataset.id);
+                });
+
+                fetch("salvar_ordem.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ordem })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "ok") {
+                        console.log("Ordem salva com sucesso!");
+                    } else {
+                        console.error("Erro ao salvar ordem:", data);
+                        alert("Erro ao salvar ordem!");
+                    }
+                })
+                .catch(err => {
+                    console.error("Falha na requisição:", err);
+                    alert("Falha ao salvar ordem!");
+                });
             }
-        })
-        .catch(err => {
-            console.error("Falha na requisição:", err);
-            alert("Falha ao salvar ordem!");
         });
     }
+
+    initSortable();
+
+    // Ativa/desativa o drag com duplo clique
+    document.querySelectorAll("#itens-container .card-container").forEach(card => {
+        card.addEventListener("dblclick", function () {
+            dragEnabled = !dragEnabled;
+            sortableInstance.option("disabled", !dragEnabled);
+
+            if (dragEnabled) {
+                alert("Modo de reordenação ativado! Arraste os cards para reorganizar.");
+            } else {
+                alert("Modo de reordenação desativado!");
+            }
+        });
     });
 });
 </script>
