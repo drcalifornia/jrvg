@@ -135,10 +135,20 @@ $result = $conn->query($sql);
                                     <?= $row['tipo'] == 1 ? 'Pessoal' : 'Profissional' ?>
                                 </span>
                             </p>
-                            <a href="?delete=<?= $row['id'] ?>" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Tem certeza que deseja excluir este item?')">
-                                Excluir
-                            </a>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-warning btn-sm editar-btn"
+                                        data-id="<?= $row['id'] ?>"
+                                        data-descricao="<?= htmlspecialchars($row['descricao']) ?>"
+                                        data-imagem="<?= $row['attach'] ?>"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal">
+                                    Editar
+                                </button>
+                                <a href="?delete=<?= $row['id'] ?>" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Tem certeza que deseja excluir este item?')">
+                                    Excluir
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,6 +194,36 @@ $result = $conn->query($sql);
     </div>
 </div>
 
+<!-- Modal de Edição -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="editForm" method="POST" action="editar_item.php">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Descrição</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit-id">
+
+                    <div class="mb-3 text-center">
+                        <img id="edit-image" src="" alt="Imagem atual" class="img-fluid rounded shadow">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="edit-descricao" class="form-label">Descrição</label>
+                        <textarea name="descricao" id="edit-descricao" class="form-control" rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -206,6 +246,39 @@ tinymce.init({
              'link image media table | removeformat | code help',
     menubar: true,
     branding: false
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // TinyMCE no campo principal e no modal
+    tinymce.init({
+        selector: '#descricao, #edit-descricao',
+        plugins: 'lists link image table code help wordcount',
+        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code',
+        height: 300,
+        language: 'pt_BR',
+        branding: false,
+        menubar: false
+    });
+
+    // Preencher os dados no modal ao clicar em Editar
+    const editButtons = document.querySelectorAll(".editar-btn");
+    editButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const id = button.dataset.id;
+            const descricao = button.dataset.descricao;
+            const imagem = button.dataset.imagem;
+
+            document.getElementById("edit-id").value = id;
+            document.getElementById("edit-image").src = imagem || "https://via.placeholder.com/300x150?text=Sem+Imagem";
+
+            // Atualiza o TinyMCE dentro do modal
+            setTimeout(() => {
+                tinymce.get('edit-descricao').setContent(descricao);
+            }, 200);
+        });
+    });
 });
 </script>
 
