@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function() {
         height: 300,
         language: 'pt_BR',
         branding: false,
-        menubar: false
+        menubar: true
     });
 
     // Preencher os dados no modal ao clicar em Editar
