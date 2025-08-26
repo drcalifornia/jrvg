@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 include("db_connect.php");
 
 // Função para excluir item
@@ -48,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_item'])) {
 }
 
 // Buscar todos os itens
-$sql = "SELECT id, descricao, attach, tipo FROM tb_itens ORDER BY id DESC";
+$sql = "SELECT id, descricao, attach, tipo FROM tb_itens ORDER BY ordem ASC";
 $result = $conn->query($sql);
 ?>
 
@@ -62,8 +69,8 @@ $result = $conn->query($sql);
     <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Summernote CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <style>
         body {
@@ -86,21 +93,35 @@ $result = $conn->query($sql);
             border: 1px solid #ccc;
             border-radius: 8px;
         }
+        #itens-container .card {
+            cursor: grab;
+            transition: transform 0.2s ease-in-out;
+        }
+        #itens-container .card:active {
+            cursor: grabbing;
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3">Painel Administrativo</h1>
+    <div class="container mt-3 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3">Painel Administrativo</h1>
+            <div>
+                <span class="me-3">Olá, <?= $_SESSION['usuario_nome']; ?>!</span>
+                <a href="logout.php" class="btn btn-outline-danger btn-sm">Sair</a>
+            </div>
+        </div>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">+ Adicionar Item</button>
     </div>
 
     <!-- Tabela de itens -->
-    <div class="row">
+    <div class="row" id="itens-container">
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while($row = $result->fetch_assoc()): ?>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 mb-4 card-container" data-id="<?= $row['id'] ?>">
                     <div class="card shadow-sm">
                         <?php if (!empty($row['attach'])): ?>
                             <img src="<?= htmlspecialchars($row['attach']) ?>" alt="Imagem">
@@ -115,7 +136,7 @@ $result = $conn->query($sql);
                                 </span>
                             </p>
                             <a href="?delete=<?= $row['id'] ?>" class="btn btn-danger btn-sm"
-                               onclick="return confirm('Tem certeza que deseja excluir este item?')">
+                            onclick="return confirm('Tem certeza que deseja excluir este item?')">
                                 Excluir
                             </a>
                         </div>
@@ -163,23 +184,68 @@ $result = $conn->query($sql);
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Summernote JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- TinyMCE -->
+<script src="https://cdn.tiny.cloud/1/eweyqz79kfjdx9ywj2oi9atta8uq8el5eice0cxfcxs8pg36/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#descricao').summernote({
-            placeholder: 'Digite a descrição...',
-            tabsize: 2,
-            height: 250,
-            lang: 'pt-BR'
-        });
-    });
+tinymce.init({
+    selector: '#descricao',
+    height: 300,
+    language: 'pt_BR',
+    skin: 'oxide', // tema claro
+    plugins: 'lists advlist link image media table code help wordcount',
+    toolbar: 'undo redo | formatselect | fontselect fontsizeselect | ' +
+             'bold italic underline forecolor backcolor | alignleft aligncenter ' +
+             'alignright alignjustify | bullist numlist outdent indent | ' +
+             'link image media table | removeformat | code help',
+    menubar: true,
+    branding: false
+});
 </script>
+
+<!-- SortableJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("itens-container");
+
+    new Sortable(container, {
+        animation: 150,
+        onEnd: function () {
+        const ordem = [];
+        document.querySelectorAll("#itens-container .card-container").forEach(card => {
+            ordem.push(card.dataset.id);
+        });
+
+        fetch("salvar_ordem.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ordem })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ok") {
+                console.log("Ordem salva com sucesso!");
+            } else {
+                console.error("Erro ao salvar ordem:", data);
+                alert("Erro ao salvar ordem!");
+            }
+        })
+        .catch(err => {
+            console.error("Falha na requisição:", err);
+            alert("Falha ao salvar ordem!");
+        });
+    }
+    });
+});
+</script>
+
 </body>
 </html>
 

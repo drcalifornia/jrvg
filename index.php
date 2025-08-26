@@ -2,7 +2,7 @@
 
 <?php
 // Buscar itens pessoais e profissionais
-$sql = "SELECT descricao, attach, tipo FROM tb_itens ORDER BY id DESC";
+$sql = "SELECT descricao, attach, tipo FROM tb_itens ORDER BY ordem ASC";
 $result = $conn->query($sql);
 
 $itens_pessoais = [];
@@ -37,7 +37,8 @@ if ($result && $result->num_rows > 0) {
             margin: 0;
         }
         .bg-cover {
-            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80');
+            /*background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80');*/
+            background-image: url('http://jorgericardovelez.com.br/img/1756152697_1000025609.jpeg');
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -107,14 +108,19 @@ if ($result && $result->num_rows > 0) {
 </header>
 
 <!-- Seção 1 -->
-<section class="section section-light" id="conteudo">
+<section class="section section-light text-center" id="conteudo">
     <div class="container">
+        <!-- Título -->
         <h2 class="mb-4">Breve História</h2>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit, urna eget posuere finibus, lacus nulla cursus velit, et lacinia lorem enim vel tellus. Cras id erat ut elit tincidunt feugiat. Nullam ac odio sed erat faucibus volutpat.
+
+        <!-- Texto centralizado -->
+        <p class="lead">
+            Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. 
+            A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.
         </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Sed fringilla enim at lorem accumsan, nec scelerisque diam facilisis. Integer quis odio nec quam tincidunt imperdiet. Nulla facilisi.
+        <p class="lead">
+            Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. 
+            Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.
         </p>
     </div>
 </section>
