@@ -101,6 +101,10 @@ $result = $conn->query($sql);
             cursor: grabbing;
             transform: scale(1.02);
         }
+        .card-container.reorder-mode .card {
+            border: 2px solid red !important;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -124,7 +128,14 @@ $result = $conn->query($sql);
                 <div class="col-md-4 mb-4 card-container" data-id="<?= $row['id'] ?>">
                     <div class="card shadow-sm">
                         <?php if (!empty($row['attach'])): ?>
-                            <img src="<?= htmlspecialchars($row['attach']) ?>" alt="Imagem">
+                            <?php if (strtolower(pathinfo($row['attach'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                                <a href="<?= htmlspecialchars($row['attach']) ?>" target="_blank" class="d-flex flex-column align-items-center p-3 bg-light rounded border" style="text-decoration: none;">
+                                    <i class="bi bi-file-earmark-pdf-fill" style="font-size: 3rem; color: #dc3545;"></i>
+                                    <span>Abrir PDF</span>
+                                </a>
+                            <?php else: ?>
+                                <img src="<?= htmlspecialchars($row['attach']) ?>" alt="Imagem">
+                            <?php endif; ?>
                         <?php else: ?>
                             <img src="https://via.placeholder.com/300x150?text=Sem+Imagem" alt="Sem imagem">
                         <?php endif; ?>
@@ -171,7 +182,7 @@ $result = $conn->query($sql);
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="descricao" class="form-label">Descrição</label>
-                        <textarea name="descricao" id="descricao" class="form-control" required></textarea>
+                        <textarea name="descricao" id="descricao" class="form-control" ></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo</label>
@@ -181,8 +192,8 @@ $result = $conn->query($sql);
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="attach" class="form-label">Imagem</label>
-                        <input type="file" name="attach" id="attach" class="form-control" accept="image/*" required>
+                        <label for="attach" class="form-label">Imagem ou PDF</label>
+                        <input type="file" name="attach" id="attach" class="form-control" accept="image/*,application/pdf">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -206,8 +217,12 @@ $result = $conn->query($sql);
                 <div class="modal-body">
                     <input type="hidden" name="id" id="edit-id">
 
-                    <div class="mb-3 text-center">
-                        <img id="edit-image" src="" alt="Imagem atual" class="img-fluid rounded shadow">
+                    <div class="mb-3 text-center" id="preview-container">
+                        <img id="edit-image" src="" class="img-fluid rounded shadow" style="display:none; max-height:200px;">
+                        <a id="edit-pdf" href="#" target="_blank" class="d-none d-flex flex-column align-items-center p-3 bg-light rounded border" style="text-decoration:none;">
+                            <i class="bi bi-file-earmark-pdf-fill" style="font-size:3rem; color:#dc3545;"></i>
+                            <span>Abrir PDF</span>
+                        </a>
                     </div>
 
                     <div class="mb-3">
@@ -254,99 +269,144 @@ tinymce.init({
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // TinyMCE no campo principal e no modal
-    tinymce.init({
-        selector: '#descricao, #edit-descricao',
-        plugins: 'lists link image table code help wordcount',
-        toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code',
-        height: 300,
-        language: 'pt_BR',
-        branding: false,
-        menubar: true,
-        mobile: {
-            menubar: true,
-            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code'
+    document.querySelector("#addModal form").addEventListener("submit", function (e) {
+        const content = tinymce.get("descricao").getContent({ format: "text" }).trim();
+        if (!content) {
+            e.preventDefault();
+            alert("Por favor, preencha a descrição!");
+            tinymce.get("descricao").focus();
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // TinyMCE no campo principal e no modal
+        tinymce.init({
+            selector: '#descricao, #edit-descricao',
+            plugins: 'lists link image table code help wordcount',
+            toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code',
+            height: 300,
+            language: 'pt_BR',
+            branding: false,
+            menubar: true,
+            mobile: {
+                menubar: true,
+                toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | code'
+            }
     });
 
     // Preencher os dados no modal ao clicar em Editar
     const editButtons = document.querySelectorAll(".editar-btn");
-    editButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const id = button.dataset.id;
-            const descricao = button.dataset.descricao;
-            const imagem = button.dataset.imagem;
+        editButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.dataset.id;
+                const descricao = button.dataset.descricao;
+                const imagem = button.dataset.imagem;
 
-            document.getElementById("edit-id").value = id;
-            document.getElementById("edit-image").src = imagem || "https://via.placeholder.com/300x150?text=Sem+Imagem";
+                document.getElementById("edit-id").value = id;
+                const previewImg = document.getElementById("edit-image");
+                const previewPdf = document.getElementById("edit-pdf");
 
-            // Atualiza o TinyMCE dentro do modal
-            setTimeout(() => {
-                tinymce.get('edit-descricao').setContent(descricao);
-            }, 200);
+                if (imagem && imagem.toLowerCase().endsWith('.pdf')) {
+                    previewImg.style.display = "none";
+                    previewPdf.classList.remove("d-none");
+                    previewPdf.href = imagem;
+                } else if (imagem) {
+                    previewPdf.classList.add("d-none");
+                    previewImg.style.display = "block";
+                    previewImg.src = imagem;
+                } else {
+                    previewPdf.classList.add("d-none");
+                    previewImg.style.display = "block";
+                    previewImg.src = "https://via.placeholder.com/300x150?text=Sem+Imagem";
+                }
+
+                // Atualiza o TinyMCE dentro do modal
+                setTimeout(() => {
+                    tinymce.get('edit-descricao').setContent(descricao);
+                }, 200);
+            });
         });
     });
-});
 </script>
 
 <!-- SortableJS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const container = document.getElementById("itens-container");
+    document.addEventListener("DOMContentLoaded", () => {
+        const container = document.getElementById("itens-container");
+        let lastTap = 0;
+        let sortableInstance = null;
+        let dragEnabled = false;
 
-    let sortableInstance = null;
-let dragEnabled = false;
-
-function initSortable() {
-    sortableInstance = new Sortable(container, {
-            animation: 150,
-            disabled: true, // inicia desativado
-            onEnd: function () {
-                const ordem = [];
-                document.querySelectorAll("#itens-container .card-container").forEach(card => {
-                    ordem.push(card.dataset.id);
-                });
-
-                fetch("salvar_ordem.php", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ ordem })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "ok") {
-                        console.log("Ordem salva com sucesso!");
-                    } else {
-                        console.error("Erro ao salvar ordem:", data);
-                        alert("Erro ao salvar ordem!");
-                    }
-                })
-                .catch(err => {
-                    console.error("Falha na requisição:", err);
-                    alert("Falha ao salvar ordem!");
-                });
-            }
-        });
-    }
-
-    initSortable();
-
-    // Ativa/desativa o drag com duplo clique
-    document.querySelectorAll("#itens-container .card-container").forEach(card => {
-        card.addEventListener("dblclick", function () {
+        function toggleReorderMode() {
             dragEnabled = !dragEnabled;
             sortableInstance.option("disabled", !dragEnabled);
 
             if (dragEnabled) {
                 alert("Modo de reordenação ativado! Arraste os cards para reorganizar.");
+                document.querySelectorAll("#itens-container .card-container").forEach(c => {
+                    c.classList.add("reorder-mode");
+                });
             } else {
                 alert("Modo de reordenação desativado!");
+                document.querySelectorAll("#itens-container .card-container").forEach(c => {
+                    c.classList.remove("reorder-mode");
+                });
             }
+        }
+
+        function initSortable() {
+            sortableInstance = new Sortable(container, {
+                animation: 150,
+                disabled: true, // inicia desativado
+                onEnd: function () {
+                    const ordem = [];
+                    document.querySelectorAll("#itens-container .card-container").forEach(card => {
+                        ordem.push(card.dataset.id);
+                    });
+
+                    fetch("salvar_ordem.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ ordem })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "ok") {
+                            console.log("Ordem salva com sucesso!");
+                        } else {
+                            console.error("Erro ao salvar ordem:", data);
+                            alert("Erro ao salvar ordem!");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Falha na requisição:", err);
+                        alert("Falha ao salvar ordem!");
+                    });
+                }
+            });
+        }
+
+        initSortable();
+
+        // Ativa/desativa o drag com duplo clique
+        document.querySelectorAll("#itens-container .card-container").forEach(card => {
+            // Desktop → double click normal
+            card.addEventListener("dblclick", toggleReorderMode);
+            // Mobile → simula double tap
+            card.addEventListener("touchstart", function (e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+
+                if (tapLength < 300 && tapLength > 0) {
+                    // Se dois toques acontecerem num intervalo < 300ms → ativa/desativa
+                    toggleReorderMode();
+                    e.preventDefault();
+                }
+                lastTap = currentTime;
+            });
         });
     });
-});
 </script>
 
 </body>

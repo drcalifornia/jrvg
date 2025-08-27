@@ -146,8 +146,18 @@ if ($result && $result->num_rows > 0) {
                             <div class="row">
                                 <?php foreach ($itens_pessoais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
-                                        <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img" loading="lazy">
-                                        <p><?php echo $item['descricao']; ?></p>
+                                        <?php if (strtolower(pathinfo($item['attach'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                                            <!-- Card para PDFs -->
+                                            <button class="btn btn-danger w-100 mb-2 ver-pdf-btn"
+                                                    data-pdf="<?= htmlspecialchars($item['attach']) ?>"
+                                                    data-descricao="<?= htmlspecialchars($item['descricao']) ?>">
+                                                📄 Ver PDF
+                                            </button>
+                                        <?php else: ?>
+                                            <!-- Card para imagens -->
+                                            <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
+                                        <?php endif; ?>
+                                        <p><?= $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -173,8 +183,18 @@ if ($result && $result->num_rows > 0) {
                             <div class="row">
                                 <?php foreach ($itens_profissionais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
-                                        <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img" loading="lazy">
-                                        <p><?php echo $item['descricao']; ?></p>
+                                        <?php if (strtolower(pathinfo($item['attach'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                                            <!-- Card para PDFs -->
+                                            <button class="btn btn-danger w-100 mb-2 ver-pdf-btn"
+                                                data-pdf="<?= htmlspecialchars($item['attach']) ?>"
+                                                data-descricao="<?= htmlspecialchars($item['descricao']) ?>">
+                                            📄 Ver PDF
+                                        </button>
+                                        <?php else: ?>
+                                            <!-- Card para imagens -->
+                                            <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
+                                        <?php endif; ?>
+                                        <p><?= $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -207,8 +227,49 @@ if ($result && $result->num_rows > 0) {
     <p class="mb-0">© 2025 JRVG. Todos os direitos reservados.</p>
 </footer>
 
+<!-- Modal PDF -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="pdfModalLabel">Visualizar PDF</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="pdfFrame" src="" width="100%" height="600px" style="border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll('.ver-pdf-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const pdfUrl = this.dataset.pdf;
+        const descricao = this.dataset.descricao;
+
+        // Atualiza título do modal
+        //document.getElementById('pdfModalLabel').textContent = descricao;
+
+        // Seta o PDF no iframe
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            window.open(pdfUrl, '_blank');
+        } else {
+            document.getElementById('pdfFrame').src = pdfUrl;
+            const modal = new bootstrap.Modal(document.getElementById('pdfModal'));
+            modal.show();
+        }
+    });
+});
+
+// Limpar o iframe ao fechar o modal (para economizar memória no mobile)
+document.getElementById('pdfModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('pdfFrame').src = "";
+});
+</script>
 
 <script>
 // Lazy loading: só carrega as imagens quando a aba do accordion for aberta
