@@ -30,6 +30,7 @@ if ($result && $result->num_rows > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bandeiras -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         body, html {
@@ -211,14 +212,38 @@ if ($result && $result->num_rows > 0) {
 
 <!-- Seção 2 -->
 <section class="section section-dark">
-    <div class="container">
-        <h2 class="mb-4">Entre em contato</h2>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend orci vel nunc ultrices, sed sagittis felis bibendum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur lacinia tellus vitae urna eleifend feugiat. Nam fermentum viverra sagittis. Proin ut semper sem, ac fermentum enim. Sed ut metus nec lacus luctus egestas.
-        </p>
+    <div class="container text-center">
+        <h2 class="mb-5">Entre em Contato</h2>
+        <div class="row g-4 justify-content-center">
+            <!-- Facebook -->
+            <div class="col-6 col-md-3">
+                <a href="https://facebook.com/seuperfil" target="_blank" class="text-decoration-none text-white">
+                    <i class="fab fa-facebook fa-3x mb-2"></i>
+                    <p class="mb-0">/seuperfil</p>
+                </a>
+            </div>
+            <!-- Instagram -->
+            <div class="col-6 col-md-3">
+                <a href="https://instagram.com/seuperfil" target="_blank" class="text-decoration-none text-white">
+                    <i class="fab fa-instagram fa-3x mb-2"></i>
+                    <p class="mb-0">@seuperfil</p>
+                </a>
+            </div>
+            <!-- WhatsApp -->
+            <div class="col-6 col-md-3">
+                <a href="https://wa.me/5561999999999" target="_blank" class="text-decoration-none text-white">
+                    <i class="fab fa-whatsapp fa-3x mb-2"></i>
+                    <p class="mb-0">+55 (61) 99999-9999</p>
+                </a>
+            </div>
+            <!-- E-mail -->
+            <div class="col-6 col-md-3">
+                <a href="mailto:contato@seusite.com" class="text-decoration-none text-white">
+                    <i class="fas fa-envelope fa-3x mb-2"></i>
+                    <p class="mb-0">contato@seusite.com</p>
+                </a>
+            </div>
+        </div>
     </div>
 </section>
 
