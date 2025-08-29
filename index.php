@@ -341,7 +341,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
 <script>
     const traducoes = {
         pt: {
-            desc_titulo: "Um homem de poucas palavras e muito conhecimento",
+            desc_titulo: " ",
             saiba_mais: "Saiba Mais",
             breve_historia: "Breve História",
             breve_historia_p1: 'Este espaço foi criado com o propósito de compartilhar minha trajetória, tanto no âmbito profissional quanto no pessoal. Ao longo da minha vida, percorri diferentes caminhos, enfrentei desafios e celebrei conquistas que me formaram como pessoa e como profissional.',
@@ -353,7 +353,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             direitos: "Todos os direitos reservados."
         },
         en: {
-            desc_titulo: "A man of few words and deep knowledge",
+            desc_titulo: " ",
             saiba_mais: "Learn More",
             breve_historia: "Brief History",
             breve_historia_p1: 'This space was created with the intention of sharing my journey, both professional and personal. Throughout my life, I have followed different paths, faced challenges, and celebrated achievements that have shaped me as a person and as a professional.',
@@ -365,7 +365,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             direitos: "All rights reserved."
         },
         es: {
-            desc_titulo: "Un hombre de pocas palabras y mucho conocimiento",
+            desc_titulo: " ",
             saiba_mais: "Saber Más",
             breve_historia: "Breve Historia",
             breve_historia_p1: 'Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.',
