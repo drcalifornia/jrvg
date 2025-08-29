@@ -2,7 +2,7 @@
 
 <?php
 // Buscar itens pessoais e profissionais
-$sql = "SELECT descricao, attach, tipo FROM tb_itens ORDER BY ordem ASC";
+$sql = "SELECT a.descricao, attach, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
 $result = $conn->query($sql);
 
 $itens_pessoais = [];
@@ -17,6 +17,47 @@ if ($result && $result->num_rows > 0) {
         }
     }
 }
+
+// Idioma padrão
+$idioma_ativo = 'es'; // es = espanhol
+
+// Usar esse idioma para definir as strings
+if ($idioma_ativo == 'pt') {
+    $desc_titulo = 'Um homem de poucas palavras e muito conhecimento';
+    $saiba_mais = 'Saiba Mais';
+    $breve_historia = 'Breve História';
+    $breve_historia_p1 = 'Este espaço foi criado com o propósito de compartilhar minha trajetória, tanto no âmbito profissional quanto no pessoal. Ao longo da minha vida, percorri diferentes caminhos, enfrentei desafios e celebrei conquistas que me formaram como pessoa e como profissional.';
+    $breve_historia_p2 = 'Aqui você encontrará os capítulos que marcaram minha carreira, as experiências que deixaram marcas e os momentos pessoais que deram sentido à minha jornada. Minha intenção é deixar um registro que fale não apenas do que fiz, mas também de quem sou e do que aprendi ao longo do caminho.';
+    $mais_jr = 'Mais Sobre Jorge Ricardo';
+    $pessoal = 'Pessoal';
+    $profissional = 'Profissional';
+    $contato = 'Entre em Contato';
+    $direitos = 'Todos os direitos reservados.';
+} elseif ($idioma_ativo == 'en') {
+    $desc_titulo = 'A man of few words and deep knowledge';
+    $saiba_mais = 'Learn More';
+    $breve_historia = 'Brief History';
+    $breve_historia_p1 = 'This space was created with the intention of sharing my journey, both professional and personal. Throughout my life, I have followed different paths, faced challenges, and celebrated achievements that have shaped me as a person and as a professional.';
+    $breve_historia_p2 = 'Here you will find the chapters that marked my career, the experiences that left a lasting impression, and the personal moments that gave meaning to my path. My intention is to leave a record that speaks not only of what I did, but also of who I am and what I learned along the way.';
+    $mais_jr = 'More About Jorge Ricardo';
+    $pessoal = 'Personal';
+    $profissional = 'Professional';
+    $contato = 'Contact Me';
+    $direitos = 'All rights reserved.';
+} else {
+    // Espanhol (padrão)
+    $desc_titulo = 'Un hombre de pocas palabras y mucho conocimiento';
+    $saiba_mais = 'Saber Más';
+    $breve_historia = 'Breve Historia';
+    $breve_historia_p1 = 'Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.';
+    $breve_historia_p2 = 'Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.';
+    $mais_jr = 'Más Sobre Jorge Ricardo';
+    $pessoal = 'Personal';
+    $profissional = 'Profesional';
+    $contato = 'Contacto';
+    $direitos = 'Todos los derechos reservados.';
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -72,6 +113,10 @@ if ($result && $result->num_rows > 0) {
             margin-top: 10px;
             font-size: 15px;
         }
+        nav-link.active {
+            font-weight: bold;
+            color: #ffc107 !important; /* amarelo */
+        }
     </style>
 </head>
 <body>
@@ -81,17 +126,17 @@ if ($result && $result->num_rows > 0) {
     <div class="container-fluid d-flex justify-content-end">
         <ul class="navbar-nav flex-row gap-3">
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="trocarIdioma('pt')">
+                <a class="nav-link <?php echo ($idioma_ativo == 'pt') ? 'active' : ''; ?>" href="#">
                     <span class="flag-icon flag-icon-br"></span> BRA
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="trocarIdioma('en')">
+                <a class="nav-link <?php echo ($idioma_ativo == 'en') ? 'active' : ''; ?>" href="#">
                     <span class="flag-icon flag-icon-us"></span> USA
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" onclick="trocarIdioma('es')">
+                <a class="nav-link <?php echo ($idioma_ativo == 'es') ? 'active' : ''; ?>" href="#">
                     <span class="flag-icon flag-icon-es"></span> SPA
                 </a>
             </li>
@@ -103,8 +148,8 @@ if ($result && $result->num_rows > 0) {
 <header class="bg-cover">
     <div class="overlay d-flex flex-column justify-content-center align-items-center text-center">
         <h1 class="display-4">Jorge Ricardo Velez</h1>
-        <p class="lead">Um homem de poucas palavras e muito conhecimento</p>
-        <a href="#conteudo" class="btn btn-primary btn-lg mt-4">Saiba Mais</a>
+        <p class="lead" id="desc-titulo"><?php echo($desc_titulo);?></p>
+        <a href="#conteudo" class="btn btn-primary btn-lg mt-4" id="saiba-mais"><?php echo($saiba_mais);?></a>
     </div>
 </header>
 
@@ -112,16 +157,14 @@ if ($result && $result->num_rows > 0) {
 <section class="section section-light text-center" id="conteudo">
     <div class="container">
         <!-- Título -->
-        <h2 class="mb-4">Breve História</h2>
+        <h2 class="mb-4" id="breve-historia"><?php echo($breve_historia);?></h2>
 
         <!-- Texto centralizado -->
-        <p class="lead">
-            Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. 
-            A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.
+        <p class="lead" id="bh-p1">
+            <?php echo($breve_historia_p1);?>
         </p>
-        <p class="lead">
-            Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. 
-            Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.
+        <p class="lead" id="bh-p2">
+            <?php echo($breve_historia_p2);?>
         </p>
     </div>
 </section>
@@ -129,15 +172,15 @@ if ($result && $result->num_rows > 0) {
 <!-- Seção Pessoal e Profissional -->
 <section class="section section-light" id="pessoal-profissional">
     <div class="container">
-        <h2 class="mb-4">Mais Sobre Jorge Ricardo</h2>
+        <h2 class="mb-4" id="mais-jr"><?php echo($mais_jr);?></h2>
         <div class="accordion" id="accordionExample">
 
             <!-- Pessoal -->
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingPessoal">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapsePessoal" aria-expanded="false" aria-controls="collapsePessoal">
-                        Pessoal
+                        data-bs-target="#collapsePessoal" aria-expanded="false" aria-controls="collapsePessoal" id="btn-pessoal">
+                        <?php echo($pessoal);?>
                     </button>
                 </h2>
                 <div id="collapsePessoal" class="accordion-collapse collapse" aria-labelledby="headingPessoal"
@@ -158,7 +201,7 @@ if ($result && $result->num_rows > 0) {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <p><?= $item['descricao']; ?></p>
+                                        <p class="descricao_item"><?= $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -173,8 +216,8 @@ if ($result && $result->num_rows > 0) {
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingProfissional">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseProfissional" aria-expanded="false" aria-controls="collapseProfissional">
-                        Profissional
+                        data-bs-target="#collapseProfissional" aria-expanded="false" aria-controls="collapseProfissional" id="btn-profissional">
+                        <?php echo($pessoal);?>
                     </button>
                 </h2>
                 <div id="collapseProfissional" class="accordion-collapse collapse" aria-labelledby="headingProfissional"
@@ -195,7 +238,7 @@ if ($result && $result->num_rows > 0) {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <p><?= $item['descricao']; ?></p>
+                                        <p class="descricao_item"><?= $item['descricao']; ?></p>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -213,7 +256,7 @@ if ($result && $result->num_rows > 0) {
 <!-- Seção 2 -->
 <section class="section section-dark">
     <div class="container text-center">
-        <h2 class="mb-5">Entre em Contato</h2>
+        <h2 class="mb-5" id="contato"><?php echo($contato);?></h2>
         <div class="row g-4 justify-content-center">
             <!-- WhatsApp -->
             <div class="col-6 col-md-4">
@@ -235,7 +278,7 @@ if ($result && $result->num_rows > 0) {
 
 <!-- Rodapé -->
 <footer class="text-center text-white bg-dark py-4">
-    <p class="mb-0">© 2025 JRVG. Todos os direitos reservados.</p>
+    <p class="mb-0" id="rodape">© 2025 JRVG. <?php echo($direitos);?></p>
 </footer>
 
 <!-- Modal PDF -->
@@ -294,6 +337,108 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
         });
     });
 });
+</script>
+<script>
+    const traducoes = {
+        pt: {
+            desc_titulo: "Um homem de poucas palavras e muito conhecimento",
+            saiba_mais: "Saiba Mais",
+            breve_historia: "Breve História",
+            breve_historia_p1: 'Este espaço foi criado com o propósito de compartilhar minha trajetória, tanto no âmbito profissional quanto no pessoal. Ao longo da minha vida, percorri diferentes caminhos, enfrentei desafios e celebrei conquistas que me formaram como pessoa e como profissional.',
+            breve_historia_p2: 'Aqui você encontrará os capítulos que marcaram minha carreira, as experiências que deixaram marcas e os momentos pessoais que deram sentido à minha jornada. Minha intenção é deixar um registro que fale não apenas do que fiz, mas também de quem sou e do que aprendi ao longo do caminho.',
+            mais_jr: "Mais Sobre Jorge Ricardo",
+            pessoal: "Pessoal",
+            profissional: "Profissional",
+            contato: "Entre em Contato",
+            direitos: "Todos os direitos reservados."
+        },
+        en: {
+            desc_titulo: "A man of few words and deep knowledge",
+            saiba_mais: "Learn More",
+            breve_historia: "Brief History",
+            breve_historia_p1: 'This space was created with the intention of sharing my journey, both professional and personal. Throughout my life, I have followed different paths, faced challenges, and celebrated achievements that have shaped me as a person and as a professional.',
+            breve_historia_p2: 'Here you will find the chapters that marked my career, the experiences that left a lasting impression, and the personal moments that gave meaning to my path. My intention is to leave a record that speaks not only of what I did, but also of who I am and what I learned along the way.',
+            mais_jr: "More About Jorge Ricardo",
+            pessoal: "Personal",
+            profissional: "Professional",
+            contato: "Contact Me",
+            direitos: "All rights reserved."
+        },
+        es: {
+            desc_titulo: "Un hombre de pocas palabras y mucho conocimiento",
+            saiba_mais: "Saber Más",
+            breve_historia: "Breve Historia",
+            breve_historia_p1: 'Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.',
+            breve_historia_p2: 'Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.',
+            mais_jr: "Más Sobre Jorge Ricardo",
+            pessoal: "Personal",
+            profissional: "Profesional",
+            contato: "Contacto",
+            direitos: "Todos los derechos reservados."
+        }
+    };
+
+    async function traduzirTexto(texto, idiomaDestino = "en") {
+        console.log(texto);
+        try {
+            const response = await fetch("traduzir.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    q: texto,
+                    source: "auto",
+                    target: idiomaDestino,
+                    format: "text"
+                })
+            });
+            const data = await response.json();
+            return data.translatedText;
+        } catch (error) {
+            console.error("Erro ao traduzir:", error);
+            return texto; // Fallback: retorna texto original
+        }
+    }
+</script>
+<script>
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Atualiza classe 'active'
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+
+            const idioma = this.textContent.trim().toLowerCase().substring(0, 2); // 'br', 'us', 'es'
+
+            const lang = idioma === 'br' ? 'pt' : idioma === 'us' ? 'en' : 'es';
+
+            const t = traducoes[lang];
+
+            document.getElementById('desc-titulo').textContent = t.desc_titulo;
+            document.getElementById('saiba-mais').textContent = t.saiba_mais;
+            document.getElementById('breve-historia').textContent = t.breve_historia;
+            document.getElementById('bh-p1').textContent = t.breve_historia_p1;
+            document.getElementById('bh-p2').textContent = t.breve_historia_p2;
+            document.getElementById('mais-jr').textContent = t.mais_jr;
+            document.getElementById('btn-pessoal').textContent = t.pessoal;
+            document.getElementById('btn-profissional').textContent = t.profissional;
+            document.getElementById('contato').textContent = t.contato;
+            document.getElementById('rodape').textContent = `© 2025 JRVG. ${t.direitos}`;
+
+            // Traduz os cards dinamicamente
+            /*const descricoes = document.querySelectorAll('.descricao_item'); // classe usada nos cards
+            console.log(descricoes);
+            descricoes.forEach(async (el) => {
+                const textoOriginal = el.dataset.original || el.innerText;
+
+                // Cache do texto original no dataset
+                if (!el.dataset.original) el.dataset.original = textoOriginal;
+
+                const traducao = await traduzirTexto(textoOriginal, lang);
+                el.innerText = traducao;
+            });*/
+        });
+    });
 </script>
 </body>
 </html>
