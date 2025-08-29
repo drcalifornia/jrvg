@@ -215,32 +215,18 @@ if ($result && $result->num_rows > 0) {
     <div class="container text-center">
         <h2 class="mb-5">Entre em Contato</h2>
         <div class="row g-4 justify-content-center">
-            <!-- Facebook -->
-            <div class="col-6 col-md-3">
-                <a href="https://facebook.com/seuperfil" target="_blank" class="text-decoration-none text-white">
-                    <i class="fab fa-facebook fa-3x mb-2"></i>
-                    <p class="mb-0">/seuperfil</p>
-                </a>
-            </div>
-            <!-- Instagram -->
-            <div class="col-6 col-md-3">
-                <a href="https://instagram.com/seuperfil" target="_blank" class="text-decoration-none text-white">
-                    <i class="fab fa-instagram fa-3x mb-2"></i>
-                    <p class="mb-0">@seuperfil</p>
-                </a>
-            </div>
             <!-- WhatsApp -->
-            <div class="col-6 col-md-3">
-                <a href="https://wa.me/5561999999999" target="_blank" class="text-decoration-none text-white">
+            <div class="col-6 col-md-4">
+                <a href="https://wa.me/5561996921971" target="_blank" class="text-decoration-none text-white">
                     <i class="fab fa-whatsapp fa-3x mb-2"></i>
-                    <p class="mb-0">+55 (61) 99999-9999</p>
+                    <p class="mb-0">+55 61 99692-1971</p>
                 </a>
             </div>
             <!-- E-mail -->
-            <div class="col-6 col-md-3">
-                <a href="mailto:contato@seusite.com" class="text-decoration-none text-white">
+            <div class="col-6 col-md-4">
+                <a href="mailto:ricvel299@hotmail.com" class="text-decoration-none text-white">
                     <i class="fas fa-envelope fa-3x mb-2"></i>
-                    <p class="mb-0">contato@seusite.com</p>
+                    <p class="mb-0">ricvel299@hotmail.com</p>
                 </a>
             </div>
         </div>
