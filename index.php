@@ -217,7 +217,7 @@ if ($idioma_ativo == 'pt') {
                 <h2 class="accordion-header" id="headingProfissional">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseProfissional" aria-expanded="false" aria-controls="collapseProfissional" id="btn-profissional">
-                        <?php echo($pessoal);?>
+                        <?php echo($profissional);?>
                     </button>
                 </h2>
                 <div id="collapseProfissional" class="accordion-collapse collapse" aria-labelledby="headingProfissional"
