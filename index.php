@@ -80,7 +80,7 @@ if ($idioma_ativo == 'pt') {
         }
         .bg-cover {
             /*background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80');*/
-            background-image: url('http://jorgericardovelez.com.br/img/1756152697_1000025609.jpeg');
+            background-image: url('http://jorgericardovelez.com.br/img/1756152697_1000025609_v2.jpeg');
             background-size: cover;
             background-position: center;
             height: 100vh;
