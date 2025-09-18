@@ -28,6 +28,7 @@ if ($idioma_ativo == 'pt') {
     $breve_historia = 'Breve História';
     $breve_historia_p1 = 'Este espaço foi criado com o propósito de compartilhar minha trajetória, tanto no âmbito profissional quanto no pessoal. Ao longo da minha vida, percorri diferentes caminhos, enfrentei desafios e celebrei conquistas que me formaram como pessoa e como profissional.';
     $breve_historia_p2 = 'Aqui você encontrará os capítulos que marcaram minha carreira, as experiências que deixaram marcas e os momentos pessoais que deram sentido à minha jornada. Minha intenção é deixar um registro que fale não apenas do que fiz, mas também de quem sou e do que aprendi ao longo do caminho.';
+    $breve_historia_p3 = '<b>Agradecimento</b><br>Quero expressar meu mais sincero agradecimento a Carlos, Fergus e Verônica pelo valioso apoio e dedicação na criação do meu site. Graças ao esforço, criatividade e comprometimento de vocês, hoje tenho uma ferramenta que reflete de forma clara e profissional o meu trabalho, minhas ideias e meus sonhos.<br>A paciência de vocês, suas contribuições e o tempo investido neste projeto tornaram possível que esta página não seja apenas um espaço digital, mas também um reflexo de quem eu sou e do que desejo compartilhar com os outros.<br>Com todo carinho e gratidão,<br><br>Ricardo Velez';
     $mais_jr = 'Mais Sobre Jorge Ricardo';
     $pessoal = 'Pessoal';
     $profissional = 'Profissional';
@@ -39,6 +40,7 @@ if ($idioma_ativo == 'pt') {
     $breve_historia = 'Brief History';
     $breve_historia_p1 = 'This space was created with the intention of sharing my journey, both professional and personal. Throughout my life, I have followed different paths, faced challenges, and celebrated achievements that have shaped me as a person and as a professional.';
     $breve_historia_p2 = 'Here you will find the chapters that marked my career, the experiences that left a lasting impression, and the personal moments that gave meaning to my path. My intention is to leave a record that speaks not only of what I did, but also of who I am and what I learned along the way.';
+    $breve_historia_p3 = '<b>Gratitude</b><br>I want to express my deepest gratitude to Carlos, Fergus, and Verónica for their valuable support and dedication in creating my website. Thanks to their effort, creativity, and commitment, I now have a tool that clearly and professionally reflects my work, my ideas, and my dreams.<br>Their patience, input, and the time they invested in this project made it possible for this page to be not just a digital space, but also a reflection of who I am and what I want to share with others.<br>With all my affection and gratitude,<br><br>Ricardo Velez';
     $mais_jr = 'More About Jorge Ricardo';
     $pessoal = 'Personal';
     $profissional = 'Professional';
@@ -51,6 +53,7 @@ if ($idioma_ativo == 'pt') {
     $breve_historia = 'Breve Historia';
     $breve_historia_p1 = 'Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.';
     $breve_historia_p2 = 'Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.';
+    $breve_historia_p3 = '<b>Agradecimiento</b><br>Quiero expresar mi más sincero agradecimiento a Carlos, Fergus y Verónica por el valioso apoyo y dedicación en la creación de mi página web. Gracias a su esfuerzo, creatividad y compromiso, hoy cuento con una herramienta que refleja de manera clara y profesional mi trabajo, mis ideas y mis sueños.<br>Su paciencia, sus aportes y el tiempo invertido en este proyecto han hecho posible que esta página no sea solo un espacio digital, sino también un reflejo de lo que soy y de lo que quiero compartir con los demás.<br>Con todo cariño y gratitud,<br><br>Ricardo Velez';
     $mais_jr = 'Más Sobre Jorge Ricardo';
     $pessoal = 'Personal';
     $profissional = 'Profesional';
@@ -165,6 +168,9 @@ if ($idioma_ativo == 'pt') {
         </p>
         <p class="lead" id="bh-p2">
             <?php echo($breve_historia_p2);?>
+        </p>
+        <p class="lead" id="bh-p3">
+            <?php echo($breve_historia_p3);?>
         </p>
     </div>
 </section>
@@ -346,6 +352,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             breve_historia: "Breve História",
             breve_historia_p1: 'Este espaço foi criado com o propósito de compartilhar minha trajetória, tanto no âmbito profissional quanto no pessoal. Ao longo da minha vida, percorri diferentes caminhos, enfrentei desafios e celebrei conquistas que me formaram como pessoa e como profissional.',
             breve_historia_p2: 'Aqui você encontrará os capítulos que marcaram minha carreira, as experiências que deixaram marcas e os momentos pessoais que deram sentido à minha jornada. Minha intenção é deixar um registro que fale não apenas do que fiz, mas também de quem sou e do que aprendi ao longo do caminho.',
+            breve_historia_p3: '<b>Agradecimento</b><br>Quero expressar meu mais sincero agradecimento a Carlos, Fergus e Verônica pelo valioso apoio e dedicação na criação do meu site. Graças ao esforço, criatividade e comprometimento de vocês, hoje tenho uma ferramenta que reflete de forma clara e profissional o meu trabalho, minhas ideias e meus sonhos.<br>A paciência de vocês, suas contribuições e o tempo investido neste projeto tornaram possível que esta página não seja apenas um espaço digital, mas também um reflexo de quem eu sou e do que desejo compartilhar com os outros.<br>Com todo carinho e gratidão,<br><br>Ricardo Velez',
             mais_jr: "Mais Sobre Jorge Ricardo",
             pessoal: "Pessoal",
             profissional: "Profissional",
@@ -358,6 +365,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             breve_historia: "Brief History",
             breve_historia_p1: 'This space was created with the intention of sharing my journey, both professional and personal. Throughout my life, I have followed different paths, faced challenges, and celebrated achievements that have shaped me as a person and as a professional.',
             breve_historia_p2: 'Here you will find the chapters that marked my career, the experiences that left a lasting impression, and the personal moments that gave meaning to my path. My intention is to leave a record that speaks not only of what I did, but also of who I am and what I learned along the way.',
+            breve_historia_p3: '<b>Gratitude</b><br>I want to express my deepest gratitude to Carlos, Fergus, and Verónica for their valuable support and dedication in creating my website. Thanks to their effort, creativity, and commitment, I now have a tool that clearly and professionally reflects my work, my ideas, and my dreams.<br>Their patience, input, and the time they invested in this project made it possible for this page to be not just a digital space, but also a reflection of who I am and what I want to share with others.<br>With all my affection and gratitude,<br><br>Ricardo Velez',
             mais_jr: "More About Jorge Ricardo",
             pessoal: "Personal",
             profissional: "Professional",
@@ -370,6 +378,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             breve_historia: "Breve Historia",
             breve_historia_p1: 'Este espacio fue creado con el propósito de compartir mi recorrido, tanto en el ámbito profesional como en el personal. A lo largo de mi vida he transitado distintos caminos, enfrentado desafíos y celebrado logros que me han formado como persona y como profesional.',
             breve_historia_p2: 'Aquí encontrarás los capítulos que marcaron mi carrera, las experiencias que dejaron huella y los momentos personales que dieron sentido a mi trayecto. Mi intención es dejar un registro que no solo hable de lo que hice, sino también de quién soy y de lo que aprendí en el camino.',
+            breve_historia_p3: '<b>Agradecimiento</b><br>Quiero expresar mi más sincero agradecimiento a Carlos, Fergus y Verónica por el valioso apoyo y dedicación en la creación de mi página web. Gracias a su esfuerzo, creatividad y compromiso, hoy cuento con una herramienta que refleja de manera clara y profesional mi trabajo, mis ideas y mis sueños.<br>Su paciencia, sus aportes y el tiempo invertido en este proyecto han hecho posible que esta página no sea solo un espacio digital, sino también un reflejo de lo que soy y de lo que quiero compartir con los demás.<br>Con todo cariño y gratitud,<br><br>Ricardo Velez',
             mais_jr: "Más Sobre Jorge Ricardo",
             pessoal: "Personal",
             profissional: "Profesional",
@@ -386,7 +395,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     q: texto,
-                    source: "auto",
+                    source: "es",
                     target: idiomaDestino,
                     format: "text"
                 })
@@ -417,8 +426,9 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             document.getElementById('desc-titulo').textContent = t.desc_titulo;
             document.getElementById('saiba-mais').textContent = t.saiba_mais;
             document.getElementById('breve-historia').textContent = t.breve_historia;
-            document.getElementById('bh-p1').textContent = t.breve_historia_p1;
-            document.getElementById('bh-p2').textContent = t.breve_historia_p2;
+            document.getElementById('bh-p1').innerHTML = t.breve_historia_p1;
+            document.getElementById('bh-p2').innerHTML = t.breve_historia_p2;
+            document.getElementById('bh-p3').innerHTML = t.breve_historia_p3;
             document.getElementById('mais-jr').textContent = t.mais_jr;
             document.getElementById('btn-pessoal').textContent = t.pessoal;
             document.getElementById('btn-profissional').textContent = t.profissional;

@@ -7,7 +7,7 @@ $response = file_get_contents("https://libretranslate.de/translate", false, stre
         "header" => "Content-Type: application/json",
         "content" => json_encode([
             "q" => $data["q"],
-            "source" => "auto",
+            "source" => "es",
             "target" => $data["target"],
             "format" => "text"
         ])
