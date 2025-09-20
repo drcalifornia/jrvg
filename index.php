@@ -218,7 +218,7 @@ if ($idioma_ativo == 'pt') {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <p class="descricao_item"><?= $item['descricao']; ?></p>
+                                        <div class="descricao_item"><?= $item['descricao']; ?></div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -255,7 +255,7 @@ if ($idioma_ativo == 'pt') {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <p class="descricao_item"><?= $item['descricao']; ?></p>
+                                        <div class="descricao_item"><?= $item['descricao']; ?></div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -311,6 +311,16 @@ if ($idioma_ativo == 'pt') {
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal de Loading -->
+<div id="loadingModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white text-center p-5">
+      <div class="spinner-border text-light mb-3" role="status"></div>
+      <h5>Traduzindo conteúdo...</h5>
+    </div>
+  </div>
 </div>
 
 <!-- Bootstrap JS -->
@@ -398,21 +408,18 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
         }
     };
 
-    async function traduzirTexto(texto, idiomaDestino = "en") {
-        console.log(texto);
+    async function traduzirTexto(texto, idiomaDestino = "en", langOriginal = "es") {
+        //console.log(texto);
+        //console.log("traduzir.php?idiomaDestino="+idiomaDestino+"&langOriginal="+langOriginal+"&texto="+texto);
         try {
-            const response = await fetch("traduzir.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    q: texto,
-                    source: "es",
-                    target: idiomaDestino,
-                    format: "text"
-                })
+            const response = await fetch("traduzir.php?idiomaDestino="+idiomaDestino+"&langOriginal="+langOriginal+"&texto="+texto, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" }
             });
             const data = await response.json();
-            return data.translatedText;
+            //console.log(data);
+            //return data['translations']['possible-translations'][0];
+            return data['destination-text'];
         } catch (error) {
             console.error("Erro ao traduzir:", error);
             return texto; // Fallback: retorna texto original
@@ -420,16 +427,30 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
     }
 </script>
 <script>
+    function showLoading() {
+        const modal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        modal.show();
+        return modal;
+    }
+
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
 
             // Atualiza classe 'active'
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => {
+                if (l.classList.contains('active')) {
+                    langOriginal = l.textContent.trim().toLowerCase().substring(0, 2) === 'br' ? 'pt' : l.textContent.trim().toLowerCase().substring(0, 2) === 'us' ? 'en' : 'es';
+                }
+                l.classList.remove('active')
+            });
             this.classList.add('active');
 
             const idioma = this.textContent.trim().toLowerCase().substring(0, 2); // 'br', 'us', 'es'
-
+            
             const lang = idioma === 'br' ? 'pt' : idioma === 'us' ? 'en' : 'es';
 
             const t = traducoes[lang];
@@ -446,10 +467,38 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             document.getElementById('contato').textContent = t.contato;
             document.getElementById('rodape').textContent = `© 2025 JRVG. ${t.direitos}`;
 
+            showLoading();
+            const promises = [];
+
             // Traduz os cards dinamicamente
-            /*const descricoes = document.querySelectorAll('.descricao_item'); // classe usada nos cards
-            console.log(descricoes);
-            descricoes.forEach(async (el) => {
+            const descricoes = document.querySelectorAll('.descricao_item'); // classe usada nos cards
+            //console.log(descricoes);
+            descricoes.forEach(async (cardElement) => {
+                const textos = cardElement.querySelectorAll('p');
+                textos.forEach(async (texto) => {
+                    if (!texto.innerHTML.includes('span')){
+                        const prom = traduzirTexto(texto.innerHTML, lang, langOriginal).then((traducao) => {
+                            if (traducao.length > 0) texto.innerHTML = traducao;
+                        });
+                        promises.push(prom);
+                    }
+                    else{
+                        const spans = texto.querySelectorAll('span');
+                        spans.forEach((span) => {
+                            const textoOriginalPuro = span.innerText;
+                            const prom = traduzirTexto(textoOriginalPuro, lang, langOriginal).then((traducao) => {
+                                if (traducao.length > 0)
+                                    texto.innerHTML = texto.innerHTML.replace(textoOriginalPuro, traducao);
+                            });
+                            promises.push(prom);
+                        });
+                    }
+                });
+            });
+            Promise.all(promises).then(() => {
+                bootstrap.Modal.getInstance(document.getElementById('loadingModal')).hide();
+            });
+            /*descricoes.forEach(async (el) => {
                 const textoOriginal = el.dataset.original || el.innerText;
 
                 // Cache do texto original no dataset
