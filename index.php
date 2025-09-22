@@ -2,7 +2,7 @@
 
 <?php
 // Buscar itens pessoais e profissionais
-$sql = "SELECT a.descricao, attach, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
+$sql = "SELECT a.descricao, a.desc_pt, a.desc_en, attach, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
 $result = $conn->query($sql);
 
 $itens_pessoais = [];
@@ -218,7 +218,7 @@ if ($idioma_ativo == 'pt') {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <div class="descricao_item"><?= $item['descricao']; ?></div>
+                                        <div class="descricao_item" data-es="<?php echo(base64_encode(($item['descricao']))); ?>" data-en="<?php echo(base64_encode(($item['desc_en']))); ?>" data-pt="<?php echo(base64_encode(($item['desc_pt']))); ?>"><?= $item['descricao']; ?></div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -255,7 +255,7 @@ if ($idioma_ativo == 'pt') {
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
                                         <?php endif; ?>
-                                        <div class="descricao_item"><?= $item['descricao']; ?></div>
+                                        <div class="descricao_item" data-es="<?php echo(base64_encode(($item['descricao']))); ?>" data-en="<?php echo(base64_encode(($item['desc_en']))); ?>" data-pt="<?php echo(base64_encode(($item['desc_pt']))); ?>"><?= $item['descricao']; ?></div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -427,19 +427,33 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
     }
 </script>
 <script>
+    let loadingModalInstance; // variável global para manter a instância
+
     function showLoading() {
-        const modal = new bootstrap.Modal(document.getElementById('loadingModal'), {
-            backdrop: 'static',
-            keyboard: false
-        });
-        modal.show();
-        return modal;
+        const loadingModalEl = document.getElementById('loadingModal');
+        
+        // cria uma instância só se ainda não existir
+        if (!loadingModalInstance) {
+            loadingModalInstance = new bootstrap.Modal(loadingModalEl, {
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        loadingModalInstance.show(); // mostra sempre a mesma instância
+    }
+
+    function hideLoading() {
+        if (loadingModalInstance) {
+            loadingModalInstance.hide();
+        }
     }
 
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-
+            
+            showLoading();
             // Atualiza classe 'active'
             document.querySelectorAll('.nav-link').forEach(l => {
                 if (l.classList.contains('active')) {
@@ -466,12 +480,28 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             document.getElementById('btn-profissional').textContent = t.profissional;
             document.getElementById('contato').textContent = t.contato;
             document.getElementById('rodape').textContent = `© 2025 JRVG. ${t.direitos}`;
-
-            showLoading();
-            const promises = [];
-
+            
             // Traduz os cards dinamicamente
             const descricoes = document.querySelectorAll('.descricao_item'); // classe usada nos cards
+            descricoes.forEach((cardElement) => {
+                switch (lang) {
+                    case 'en':
+                        cardElement.innerHTML = atob(cardElement.getAttribute("data-en"));
+                        break;
+                    case 'pt':
+                        cardElement.innerHTML = atob(cardElement.getAttribute("data-pt"));
+                        break;
+                    // ... more cases
+                    default:
+                        cardElement.innerHTML = atob(cardElement.getAttribute("data-es"));
+                }
+            });
+            // Dá um tempinho só para garantir que o DOM foi atualizado
+            setTimeout(() => {
+                hideLoading();
+            }, 500);
+            
+            /*const promises = [];
             //console.log(descricoes);
             descricoes.forEach(async (cardElement) => {
                 const textos = cardElement.querySelectorAll('p');
@@ -497,15 +527,6 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             });
             Promise.all(promises).then(() => {
                 bootstrap.Modal.getInstance(document.getElementById('loadingModal')).hide();
-            });
-            /*descricoes.forEach(async (el) => {
-                const textoOriginal = el.dataset.original || el.innerText;
-
-                // Cache do texto original no dataset
-                if (!el.dataset.original) el.dataset.original = textoOriginal;
-
-                const traducao = await traduzirTexto(textoOriginal, lang);
-                el.innerText = traducao;
             });*/
         });
     });
