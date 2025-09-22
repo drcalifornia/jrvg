@@ -68,6 +68,14 @@ if ($idioma_ativo == 'pt') {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Meta Open Graph (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:title" content="Jorge Ricardo Vélez">
+    <meta property="og:description" content="Descubre la trayectoria personal y profesional de Jorge Ricardo Vélez.">
+    <meta property="og:image" content="https://www.jorgericardovelez.com.br/img/1756152697_1000025609_v2.jpeg">
+    <meta property="og:url" content="https://www.jorgericardovelez.com.br">
+    <meta property="og:type" content="website">
+
     <title>Jorge Ricardo Velez Guevara</title>
 
     <!-- Bootstrap 5 CDN -->
