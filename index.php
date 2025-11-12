@@ -2,7 +2,7 @@
 
 <?php
 // Buscar itens pessoais e profissionais
-$sql = "SELECT a.descricao, a.desc_pt, a.desc_en, attach, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
+$sql = "SELECT a.descricao, a.desc_pt, a.desc_en, attach, a.thumbnail, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
 $result = $conn->query($sql);
 
 $itens_pessoais = [];
@@ -216,6 +216,9 @@ if ($idioma_ativo == 'pt') {
                                 <?php foreach ($itens_pessoais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
                                         <?php if (strtolower(pathinfo($item['attach'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                                            <?php if (!empty($item['thumbnail'])): ?>
+                                                <img data-src="<?= htmlspecialchars($item['thumbnail']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
+                                            <?php endif; ?>
                                             <!-- Card para PDFs -->
                                             <button class="btn btn-danger w-100 mb-2 ver-pdf-btn"
                                                     data-pdf="<?= htmlspecialchars($item['attach']) ?>"
@@ -253,6 +256,9 @@ if ($idioma_ativo == 'pt') {
                                 <?php foreach ($itens_profissionais as $item): ?>
                                     <div class="col-md-4 mb-4 text-center">
                                         <?php if (strtolower(pathinfo($item['attach'], PATHINFO_EXTENSION)) === 'pdf'): ?>
+                                            <?php if (!empty($item['thumbnail'])): ?>
+                                                <img data-src="<?= htmlspecialchars($item['thumbnail']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
+                                            <?php endif; ?>
                                             <!-- Card para PDFs -->
                                             <button class="btn btn-danger w-100 mb-2 ver-pdf-btn"
                                                 data-pdf="<?= htmlspecialchars($item['attach']) ?>"
