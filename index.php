@@ -2,7 +2,7 @@
 
 <?php
 // Buscar itens pessoais e profissionais
-$sql = "SELECT a.descricao, a.desc_pt, a.desc_en, attach, a.thumbnail, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
+$sql = "SELECT a.descricao, a.desc_pt, a.desc_en, attach, a.thumbnail, a.venda, tipo, b.descricao as idioma FROM tb_itens a LEFT JOIN tb_idiomas b ON a.id_idioma = b.id ORDER BY ordem ASC";
 $result = $conn->query($sql);
 
 $itens_pessoais = [];
@@ -225,6 +225,12 @@ if ($idioma_ativo == 'pt') {
                                                     data-descricao="<?= htmlspecialchars($item['descricao']) ?>">
                                                 📄 Ver PDF
                                             </button>
+                                            <?php if (!empty($item['venda'])): ?>
+                                                <button class="btn btn-success w-100 mb-2 comprar-btn"
+                                                        data-link="<?= htmlspecialchars($item['venda']) ?>">
+                                                    🛒 Comprar
+                                                </button>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
@@ -264,7 +270,13 @@ if ($idioma_ativo == 'pt') {
                                                 data-pdf="<?= htmlspecialchars($item['attach']) ?>"
                                                 data-descricao="<?= htmlspecialchars($item['descricao']) ?>">
                                             📄 Ver PDF
-                                        </button>
+                                            </button>
+                                            <?php if (!empty($item['venda'])): ?>
+                                                <button class="btn btn-success w-100 mb-2 comprar-btn"
+                                                        data-link="<?= htmlspecialchars($item['venda']) ?>">
+                                                    🛒 Comprar
+                                                </button>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <!-- Card para imagens -->
                                             <img data-src="<?= htmlspecialchars($item['attach']) ?>" alt="Imagem" class="lazy-img img-fluid rounded shadow" loading="lazy">
@@ -363,6 +375,20 @@ document.querySelectorAll('.ver-pdf-btn').forEach(btn => {
 // Limpar o iframe ao fechar o modal (para economizar memória no mobile)
 document.getElementById('pdfModal').addEventListener('hidden.bs.modal', function() {
     document.getElementById('pdfFrame').src = "";
+});
+
+document.querySelectorAll('.comprar-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const url = this.dataset.link;
+
+        if (!url || url.trim() === "") {
+            alert("Link de compra não disponível.");
+            return;
+        }
+
+        // Abre a URL em nova aba
+        window.open(url, "_blank");
+    });
 });
 </script>
 
