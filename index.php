@@ -139,6 +139,88 @@ if ($idioma_ativo == 'pt') {
             /*font-size: 26px;*/
             font-weight: bold;
         }
+
+        /* BANNER FLUTUANTE */
+        #banner-venda {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #1b1f24, #343a40);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            animation: subir 0.7s ease-out;
+        }
+
+        @keyframes subir {
+            from { transform: translateY(50px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+
+        #banner-venda .banner-conteudo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #banner-venda .banner-textos h3 {
+            font-size: 18px;
+            color: #ffffff;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        #banner-venda .banner-textos p {
+            margin: 0;
+            font-size: 14px;
+            color: #dcdcdc;
+        }
+
+        #banner-venda .banner-btn {
+            display: inline-block;
+            background: #ffc107;
+            color: #000;
+            padding: 10px 18px;
+            font-weight: 700;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(255,193,7,0.5);
+        }
+
+        #banner-venda .banner-btn:hover {
+            background: #ffdd33;
+            transform: scale(1.05);
+        }
+
+        #banner-venda .banner-fechar {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin-right: 5px;
+        }
+
+        /* Versão Mobile */
+        @media(max-width: 600px){
+            #banner-venda {
+                bottom: 15px;
+                right: 15px;
+                width: 90%;
+                padding: 15px;
+            }
+            #banner-venda .banner-conteudo {
+                flex-direction: column;
+                text-align: center;
+            }
+            #banner-venda .banner-btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -347,6 +429,22 @@ if ($idioma_ativo == 'pt') {
       <h5>Traduzindo conteúdo...</h5>
     </div>
   </div>
+</div>
+
+<!-- Banner Flutuante de Venda -->
+<div id="banner-venda">
+    <div class="banner-conteudo">
+        <span class="banner-fechar" onclick="document.getElementById('banner-venda').style.display='none'">&times;</span>
+
+        <div class="banner-textos">
+            <h3>📚 Compre Livros Exclusivos</h3>
+            <p>Guias técnicos e materiais profissionais disponíveis agora.</p>
+        </div>
+
+        <a href="https://go.hotmart.com/E103335160I" target="_blank" class="banner-btn">
+            Comprar Agora
+        </a>
+    </div>
 </div>
 
 <!-- Bootstrap JS -->
