@@ -33,7 +33,7 @@ if ($idioma_ativo == 'pt') {
     $pessoal = 'Pessoal';
     $profissional = 'Profissional';
     $contato = 'Entre em Contato';
-    $direitos = 'Todos os direitos reservados.';
+    $direitos = 'Todos os direitos reservados.<br><span style="font-size: 0.7em;">Feito por Veronica Velez & Carlos Becker</span>';
 } elseif ($idioma_ativo == 'en') {
     $desc_titulo = ' ';
     $saiba_mais = 'Learn More';
@@ -45,7 +45,7 @@ if ($idioma_ativo == 'pt') {
     $pessoal = 'Personal';
     $profissional = 'Professional';
     $contato = 'Contact Me';
-    $direitos = 'All rights reserved.';
+    $direitos = 'All rights reserved.<br><span style="font-size: 0.7em;">Made by Veronica Velez & Carlos Becker</span>';
 } else {
     // Espanhol (padrão)
     $desc_titulo = ' ';
@@ -58,7 +58,7 @@ if ($idioma_ativo == 'pt') {
     $pessoal = 'Personal';
     $profissional = 'Profesional';
     $contato = 'Contacto';
-    $direitos = 'Todos los derechos reservados.';
+    $direitos = 'Todos los derechos reservados.<br><span style="font-size: 0.7em;">Hecho por Veronica Velez & Carlos Becker</span>';
 }
 
 ?>
@@ -140,10 +140,10 @@ if ($idioma_ativo == 'pt') {
             font-weight: bold;
         }
 
-        /* BANNER FLUTUANTE */
+        /* BANNER FLUTUANTE NO TOPO DIREITO */
         #banner-venda {
             position: fixed;
-            bottom: 30px;
+            top: 80px; /* distância da navbar */
             right: 30px;
             background: linear-gradient(135deg, #1b1f24, #343a40);
             padding: 20px 25px;
@@ -152,11 +152,11 @@ if ($idioma_ativo == 'pt') {
             z-index: 9999;
             display: flex;
             align-items: center;
-            animation: subir 0.7s ease-out;
+            animation: descer 0.7s ease-out;
         }
 
-        @keyframes subir {
-            from { transform: translateY(50px); opacity: 0; }
+        @keyframes descer {
+            from { transform: translateY(-40px); opacity: 0; }
             to   { transform: translateY(0); opacity: 1; }
         }
 
@@ -205,11 +205,11 @@ if ($idioma_ativo == 'pt') {
             margin-right: 5px;
         }
 
-        /* Versão Mobile */
+        /* MOBILE */
         @media(max-width: 600px){
             #banner-venda {
-                bottom: 15px;
-                right: 15px;
+                top: 70px;
+                right: 10px;
                 width: 90%;
                 padding: 15px;
             }
@@ -516,7 +516,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             pessoal: "Pessoal",
             profissional: "Profissional",
             contato: "Entre em Contato",
-            direitos: "Todos os direitos reservados."
+            direitos: 'Todos os direitos reservados.<br><span style="font-size: 0.7em;">Feito por Veronica Velez & Carlos Becker</span>'
         },
         en: {
             desc_titulo: " ",
@@ -529,7 +529,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             pessoal: "Personal",
             profissional: "Professional",
             contato: "Contact Me",
-            direitos: "All rights reserved."
+            direitos: 'All rights reserved.<br><span style="font-size: 0.7em;">Made by Veronica Velez & Carlos Becker</span>'
         },
         es: {
             desc_titulo: " ",
@@ -542,7 +542,7 @@ document.querySelectorAll('.accordion-collapse').forEach(section => {
             pessoal: "Personal",
             profissional: "Profesional",
             contato: "Contacto",
-            direitos: "Todos los derechos reservados."
+            direitos: 'Todos los derechos reservados.<br><span style="font-size: 0.7em;">Hecho por Veronica Velez & Carlos Becker</span>'
         }
     };
 
